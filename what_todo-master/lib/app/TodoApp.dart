@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:what_todo/Ui/Auth/Pages/Rigester.dart';
 import 'package:what_todo/Ui/NewTodo/Pages/NewTodo.dart';
 import 'package:what_todo/Ui/homePage/Pages/homepage.dart';
+import '../Ui/Auth/Pages/IntroPage.dart';
 
 class TodoApp extends StatelessWidget {
   @override
@@ -33,7 +34,9 @@ class TodoApp extends StatelessWidget {
           ),
         ),
         routes: {
-          '/': (BuildContext context) => Rigester(),
+          // intro
+          '/': (BuildContext context) => IntroPage(),
+          '/Rigester': (BuildContext context) => Rigester(),
           // homePage
           '/homePage': (BuildContext context) => Homepage(),
           // newTodo

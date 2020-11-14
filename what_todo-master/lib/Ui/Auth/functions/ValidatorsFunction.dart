@@ -20,9 +20,9 @@ String validatePassword(String value) {
   }
 }
 
-String validateUserName(String value) {
+String validateConfirmPassword(String value) {
   if (value.length < 3) {
-    return 'the userName must be more than 3 charecter';
+    return 'the password not much with confirm password';
   } else {
     return null;
   }

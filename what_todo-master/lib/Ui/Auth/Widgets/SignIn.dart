@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:what_todo/Ui/Auth/bloc/auth_bloc.dart';
 import 'package:what_todo/Ui/Auth/functions/ValidatorsFunction.dart';
 
 class SigInWidget extends StatefulWidget {
@@ -9,6 +11,7 @@ class SigInWidget extends StatefulWidget {
 }
 
 class _SigInWidgetState extends State<SigInWidget> {
+  final AuthBloc authBloc = AuthBloc();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String email;
   String password;
@@ -104,25 +107,46 @@ class _SigInWidgetState extends State<SigInWidget> {
             ),
           ),
         ),
-        InkWell(
-          child: Container(
-            height: sizeAware.height * 0.08,
-            width: sizeAware.width * 0.6,
-            child: Center(
-              child: Text(
-                'SigIn',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-                color: Theme.of(context).primaryColor),
+        BlocListener(
+          cubit: authBloc,
+          listener: (context, state) {
+            if (state is SucessSignIn) {
+              Navigator.pushReplacementNamed(context, '/homePage');
+            } else if (state is ErrorSignIn) {
+              // todo getflashbar here
+            }
+          },
+          child: BlocBuilder(
+            cubit: authBloc,
+            builder: (context, state) {
+              if (state is SigningIn) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                return InkWell(
+                  child: Container(
+                    height: sizeAware.height * 0.08,
+                    width: sizeAware.width * 0.6,
+                    child: Center(
+                      child: Text(
+                        'SigIn',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: Theme.of(context).primaryColor),
+                  ),
+                  onTap: () => submitForm(),
+                );
+              }
+            },
           ),
-          onTap: () => submitForm(),
         ),
         SizedBox(height: sizeAware.height * 0.02),
         FlatButton(
@@ -140,9 +164,15 @@ class _SigInWidgetState extends State<SigInWidget> {
   void submitForm() {
     if (!_formKey.currentState.validate()) {
       // todo define flashbar
-//  getFlashBarNotify(context, text: 'معلومات الأدخل غير كاملة');
+// todo getFlashBarNotify(context, text: 'معلومات الأدخل غير كاملة');
     } else {
-      Navigator.pushReplacementNamed(context, '/homePage');
+      _formKey.currentState.save();
+      authBloc.add(
+        SingIn(
+          email: email,
+          password: password,
+        ),
+      );
     }
   }
 }
