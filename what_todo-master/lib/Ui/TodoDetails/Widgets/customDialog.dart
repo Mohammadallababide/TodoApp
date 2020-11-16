@@ -51,53 +51,51 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                   color: Colors.black, offset: Offset(0, 10), blurRadius: 10),
             ],
           ),
-          child: Expanded(
-            child: Column(
-              children: [
-                !isEdit
-                    ? Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          icon: Icon(Icons.edit),
+          child: Column(
+            children: [
+              !isEdit
+                  ? Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          setState(() {
+                            isEdit = true;
+                          });
+                        },
+                      ),
+                    )
+                  : Container(),
+              isEdit
+                  ? Align(
+                      alignment: Alignment.topLeft,
+                      child: SizedBox(
+                        width: sizeAware.width * 0.19,
+                        child: FlatButton(
+                          child: Text(
+                            'Back',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
                           onPressed: () {
                             setState(() {
-                              isEdit = true;
+                              isEdit = false;
                             });
                           },
                         ),
-                      )
-                    : Container(),
-                isEdit
-                    ? Align(
-                        alignment: Alignment.topLeft,
-                        child: SizedBox(
-                          width: sizeAware.width * 0.19,
-                          child: FlatButton(
-                            child: Text(
-                              'Back',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isEdit = false;
-                              });
-                            },
-                          ),
-                        ),
-                      )
-                    : Container(),
-                Expanded(
-                  child: isEdit
-                      ? EditTodoInfoDetails(
-                          todo: widget.todo, text: widget.text)
-                      : TodoInfoDetails(todo: widget.todo, text: widget.text),
-                ),
-              ],
-            ),
+                      ),
+                    )
+                  : Container(),
+              Expanded(
+                child: isEdit
+                    ? EditTodoInfoDetails(
+                        todo: widget.todo, text: widget.text)
+                    : TodoInfoDetails(todo: widget.todo, text: widget.text),
+              ),
+            ],
           ),
         ),
         Positioned(
