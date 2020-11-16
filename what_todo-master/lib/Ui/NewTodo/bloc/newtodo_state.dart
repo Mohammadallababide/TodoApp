@@ -7,7 +7,11 @@ class NewtodoInitial extends NewtodoState {}
 
 class AddingNewTodo extends NewtodoState {}
 
-class NewTodoReady extends NewtodoState {}
+class NewTodoReady extends NewtodoState {
+ final  Todo newTodo;
+
+  NewTodoReady(this.newTodo);
+}
 
 class ErrorAddNewTodo extends NewtodoState {
   final String error;

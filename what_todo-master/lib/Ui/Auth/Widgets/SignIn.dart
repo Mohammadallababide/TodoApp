@@ -114,7 +114,7 @@ class _SigInWidgetState extends State<SigInWidget> {
             if (state is SucessSignIn) {
               Navigator.pushReplacementNamed(context, '/homePage');
             } else if (state is ErrorSignIn) {
-              getFlashBarNotify(context, text: state.error);
+              getFlashBarNotify(context);
             }
           },
           child: BlocBuilder(
@@ -164,7 +164,7 @@ class _SigInWidgetState extends State<SigInWidget> {
 
   void submitForm() {
     if (!_formKey.currentState.validate()) {
-      getFlashBarNotify(context, text: 'معلومات الأدخل غير كاملة');
+      getFlashBarNotify(context, text: 'معلومات الأدخل غير كاملة أو غير صحيحة ');
     } else {
       _formKey.currentState.save();
       authBloc.add(

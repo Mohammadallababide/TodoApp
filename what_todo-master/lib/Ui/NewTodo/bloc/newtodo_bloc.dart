@@ -16,16 +16,17 @@ class NewtodoBloc extends Bloc<NewtodoEvent, NewtodoState> {
     NewtodoEvent event,
   ) async* {
     if (event is AddNewTodo) {
+      Todo todo;
       String error;
       yield AddingNewTodo();
       await ServerApi.apiClient
           .addTodo(event.todo)
-          .then((value) => {})
+          .then((value) => {todo = value})
           .catchError((onError) {
         error = onError.toString();
       });
       if (error == null) {
-        yield NewTodoReady();
+        yield NewTodoReady(todo);
       } else {
         yield ErrorAddNewTodo(error);
       }

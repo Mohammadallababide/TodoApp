@@ -83,8 +83,9 @@ class ServerApi {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         if (json.containsKey('idToken')) {
-          SharedPref.pref.saveToken(json['idToken']);
-          SharedPref.pref.saveUserId(json['localId']);
+        SharedPref.pref.saveToken(json['idToken']);
+        SharedPref.pref.saveUserId(json['localId']);
+
           return "sucess";
         } else if (json['error']['message'] == 'EMAIL_NOT_FOUND') {
           return 'This email was not found.';
@@ -181,7 +182,7 @@ class ServerApi {
     }
   }
 
-  Future<bool> addTodo(Todo todo) async {
+  Future<Todo> addTodo(Todo todo) async {
     try {
       final bodyReq = jsonEncode({
         'title': todo.title,
@@ -199,7 +200,17 @@ class ServerApi {
         },
       );
       if (response.statusCode == 200) {
-        return true;
+        final json = jsonDecode(response.body);
+        print(json["name"]);
+        Todo newTodo = Todo(
+          createdTime: todo.createdTime,
+          descraption: todo.descraption,
+          title: todo.title,
+          id: json["name"],
+          isDone: false,
+          ownerId: SharedPref.userId,
+        );
+        return newTodo;
       } else {
         return Future.error("error");
       }

@@ -16,13 +16,14 @@ class _NewTodoPageState extends State<NewTodoPage> {
   final NewtodoBloc newtodoBloc = NewtodoBloc();
   String title;
   String description;
+
   @override
   Widget build(BuildContext context) {
     final Size sizeAware = MediaQuery.of(context).size;
     return BlocListener(
       listener: (context, state) {
         if (state is NewTodoReady) {
-          Navigator.pushReplacementNamed(context, '/homePage');
+          Navigator.pop(context, state.newTodo);
         } else if (state is ErrorAddNewTodo) {
           getFlashBarNotify(context);
         }

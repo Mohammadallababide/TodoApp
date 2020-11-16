@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:what_todo/Ui/homePage/Widgets/TodoCard.dart';
 import 'package:what_todo/Ui/homePage/bloc/homepage_bloc.dart';
 import 'package:what_todo/Utils/ShimmerWid.dart';
+import 'package:what_todo/model/Todo.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final HomepageBloc homepageBloc = HomepageBloc();
+  List<Todo> todoList = [];
   @override
   void initState() {
     homepageBloc.add(GetTodoList());
@@ -57,14 +59,15 @@ class _HomepageState extends State<Homepage> {
                       cubit: homepageBloc,
                       builder: (context, state) {
                         if (state is TodoListReady) {
+                          todoList = state.todoList;
                           return Expanded(
                             child: ListView.builder(
                               itemBuilder: (BuildContext context, int index) {
                                 return TodoCard(
-                                  todo: state.todoList[index],
+                                  todo: this.todoList[index],
                                 );
                               },
-                              itemCount: state.todoList.length,
+                              itemCount: this.todoList.length,
                             ),
                           );
                         }
@@ -81,7 +84,13 @@ class _HomepageState extends State<Homepage> {
                 right: 0.0,
                 child: InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, '/newTodo');
+                    Navigator.pushNamed(context, '/newTodo').then((value) {
+                      if (value != null) {
+                        setState(() {
+                          todoList.add(value);
+                        });
+                      }
+                    });
                   },
                   child: Container(
                     width: 60.0,

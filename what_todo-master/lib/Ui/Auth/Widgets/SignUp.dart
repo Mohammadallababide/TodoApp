@@ -159,7 +159,7 @@ class _SigUpWidgetState extends State<SigUpWidget> {
             if (state is SucessSignUp) {
               Navigator.pushReplacementNamed(context, '/homePage');
             } else if (state is ErrorSignUp) {
-              getFlashBarNotify(context,text:state.error);
+              getFlashBarNotify(context);
             }
           },
           child: BlocBuilder(
@@ -212,7 +212,8 @@ class _SigUpWidgetState extends State<SigUpWidget> {
 
   void submitForm() {
     if (!_formKey.currentState.validate()) {
-      getFlashBarNotify(context, text: 'معلومات الأدخل غير كاملة');
+      getFlashBarNotify(context,
+          text: 'معلومات الأدخل غير كاملة أو غير صحيحة ');
     } else {
       _formKey.currentState.save();
       authBloc.add(SingUp(
