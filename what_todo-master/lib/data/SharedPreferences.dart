@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:what_todo/model/User.dart';
 
 class SharedPref {
   SharedPref._();
@@ -6,6 +7,8 @@ class SharedPref {
   static final SharedPref pref = SharedPref._();
   static String token;
   static String userId;
+  static User user;
+
   Future<SharedPreferences> get _getSharedPref async {
     if (_preferences != null)
       return _preferences;
@@ -49,14 +52,34 @@ class SharedPref {
     return p.getString("userId");
   }
 
-  Future<String> checkLogin() async {
+  Future<Map<String, String>> getUserData() async {
+    final SharedPreferences p = await _getSharedPref;
+
+    final id = p.getString("userId");
+    final userToken = p.getString("image");
+    return {"userId": id, "token": userToken};
+  }
+
+  Future<User> fillUser() async {
+    await getUserId().then((userId) async {
+      if (userId != null)
+        await getUserData().then((value) {
+          user = User(
+            id: value['userId'],
+            token: value['token'],
+          );
+        });
+    });
+    return user;
+  }
+
+  Future<User> checkLogin() async {
     try {
       final SharedPreferences p = await _getSharedPref;
       final String token = p.getString("token");
       print("token " + token);
       if (token != null) {
-        await getUserId();
-        return await getToken();
+        return await fillUser();
       }
       return null;
     } catch (e) {

@@ -128,36 +128,37 @@ class _NewTodoPageState extends State<NewTodoPage> {
                     Padding(
                       padding: EdgeInsets.only(top: sizeAware.height * 0.03),
                       child: BlocBuilder(
-                          cubit: newtodoBloc,
-                          builder: (context, state) {
-                            if (state is AddingNewTodo) {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else {
-                              return InkWell(
-                                child: Container(
-                                  height: sizeAware.height * 0.08,
-                                  width: sizeAware.width * 0.6,
-                                  child: Center(
-                                    child: Text(
-                                      'submit Todo',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                        cubit: newtodoBloc,
+                        builder: (context, state) {
+                          if (state is AddingNewTodo) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else {
+                            return InkWell(
+                              child: Container(
+                                height: sizeAware.height * 0.08,
+                                width: sizeAware.width * 0.6,
+                                child: Center(
+                                  child: Text(
+                                    'submit Todo',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color: Theme.of(context).primaryColor,
-                                  ),
                                 ),
-                                onTap: () => submitForm(),
-                              );
-                            }
-                          }),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                              onTap: () => submitForm(),
+                            );
+                          }
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -171,7 +172,10 @@ class _NewTodoPageState extends State<NewTodoPage> {
 
   void submitForm() {
     if (!_formKey.currentState.validate()) {
-      getFlashBarNotify(context, text: 'معلومات الأدخل غير كاملة');
+      getFlashBarNotify(
+        context,
+        text: 'معلومات الأدخل غير كاملة',
+      );
     } else {
       _formKey.currentState.save();
       DateTime createdDate = DateTime.now();

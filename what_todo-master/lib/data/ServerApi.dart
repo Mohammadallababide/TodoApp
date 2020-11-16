@@ -132,7 +132,7 @@ class ServerApi {
           todoList.add(todo);
         });
         return todoList.where((Todo todo) {
-          return todo.ownerId == SharedPref.userId;
+          return todo.ownerId == SharedPref.user.id;
         }).toList();
       } else {
         return Future.error("error");
@@ -155,7 +155,7 @@ class ServerApi {
         "title": todo.title,
         "createdTime": todo.createdTime,
         "descraption": todo.descraption,
-        "ownerId": SharedPref.userId,
+        "ownerId": SharedPref.user.id,
         'isDone': todo.isDone ?? false,
       };
       final response = await _httpClient.put(
@@ -189,7 +189,7 @@ class ServerApi {
         'createdTime': todo.createdTime,
         'descraption': todo.descraption,
         'isDone': false,
-        "ownerId": SharedPref.userId,
+        "ownerId": SharedPref.user.id,
       });
       final response = await _httpClient.post(
         "https://mytodo-913d4.firebaseio.com/mytodo-913d4.json",
@@ -208,7 +208,7 @@ class ServerApi {
           title: todo.title,
           id: json["name"],
           isDone: false,
-          ownerId: SharedPref.userId,
+          ownerId: SharedPref.user.id,
         );
         return newTodo;
       } else {

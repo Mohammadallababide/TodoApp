@@ -8,13 +8,14 @@ class User {
   String name;
   @JsonKey(nullable: true)
   String id;
+  final String token;
   @JsonKey(nullable: true)
   String email;
   @JsonKey(nullable: true)
   String password;
   @JsonKey(nullable: true)
   List<Todo> todoList;
-  User({this.name, this.id, this.email, this.password,this.todoList});
+  User({this.name, this.id, this.email, this.password, this.todoList,this.token});
   factory User.fromJson(json) => _$UserFromJson(json);
   toJson() => _$UserToJson(this);
 }
