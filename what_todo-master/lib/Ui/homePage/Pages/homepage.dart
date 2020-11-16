@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:what_todo/Ui/homePage/Widgets/TodoCard.dart';
 import 'package:what_todo/Ui/homePage/bloc/homepage_bloc.dart';
+import 'package:what_todo/Utils/FlashErrorNotify.dart';
 import 'package:what_todo/Utils/ShimmerWid.dart';
 import 'package:what_todo/model/Todo.dart';
 
@@ -54,29 +55,37 @@ class _HomepageState extends State<Homepage> {
                       ),
                     ],
                   ),
-                  BlocBuilder(
-                      buildWhen: (prev, cur) => cur is TodoListReady,
-                      cubit: homepageBloc,
-                      builder: (context, state) {
-                        if (state is TodoListReady) {
-                          todoList = state.todoList;
+                  BlocListener(
+                    cubit: homepageBloc,
+                    listener: (BuildContext context, state) {
+                      if (state is ErrorGettingTodoList) {
+                        getFlashBarNotify(context);
+                      }
+                    },
+                    child: BlocBuilder(
+                        buildWhen: (prev, cur) => cur is TodoListReady,
+                        cubit: homepageBloc,
+                        builder: (context, state) {
+                          if (state is TodoListReady) {
+                            todoList = state.todoList;
+                            return Expanded(
+                              child: ListView.builder(
+                                itemBuilder: (BuildContext context, int index) {
+                                  return TodoCard(
+                                    todo: this.todoList[index],
+                                  );
+                                },
+                                itemCount: this.todoList.length,
+                              ),
+                            );
+                          }
                           return Expanded(
-                            child: ListView.builder(
-                              itemBuilder: (BuildContext context, int index) {
-                                return TodoCard(
-                                  todo: this.todoList[index],
-                                );
-                              },
-                              itemCount: this.todoList.length,
+                            child: ListView(
+                              children: loadingTodo(sizeAware),
                             ),
                           );
-                        }
-                        return Expanded(
-                          child: ListView(
-                            children: loadingTodo(sizeAware),
-                          ),
-                        );
-                      })
+                        }),
+                  )
                 ],
               ),
               Positioned(

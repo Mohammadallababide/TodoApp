@@ -45,8 +45,9 @@ class ServerApi {
       );
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        SharedPref.pref.saveToken(json['idToken']);
-        SharedPref.pref.saveUserId(json['localId']);
+        await SharedPref.pref.saveToken(json['idToken']);
+        await SharedPref.pref.saveUserId(json['localId']);
+        await SharedPref.pref.fillUser();
 
         return "sucess";
       } else {
@@ -83,9 +84,9 @@ class ServerApi {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         if (json.containsKey('idToken')) {
-        SharedPref.pref.saveToken(json['idToken']);
-        SharedPref.pref.saveUserId(json['localId']);
-
+          await SharedPref.pref.saveToken(json['idToken']);
+          await SharedPref.pref.saveUserId(json['localId']);
+          await SharedPref.pref.fillUser();
           return "sucess";
         } else if (json['error']['message'] == 'EMAIL_NOT_FOUND') {
           return 'This email was not found.';

@@ -9,7 +9,6 @@ class CustomDialogBox extends StatefulWidget {
   final Todo todo;
   final String text;
   final Image img;
-
   const CustomDialogBox({
     Key key,
     this.todo,
