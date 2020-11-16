@@ -10,10 +10,11 @@ class Todo {
   @JsonKey(nullable: true)
   bool isDone;
   @JsonKey(nullable: true)
-  final DateTime createdTime;
+  final String createdTime;
   @JsonKey(nullable: true)
   String descraption;
-  Todo({this.id, this.title, this.isDone, this.createdTime, this.descraption});
+  final String ownerId;
+  Todo({this.id, this.title, this.isDone, this.createdTime, this.descraption,this.ownerId});
 
   // Map<String, dynamic> toMap() {
   //   return {

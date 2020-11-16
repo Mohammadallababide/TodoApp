@@ -1,17 +1,21 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:what_todo/model/Todo.dart';
 import 'TodoEditInfoDetails.dart';
 import 'TodoInfoDetails.dart';
 
 class CustomDialogBox extends StatefulWidget {
-  final String title, descriptions, text;
+  final Todo todo;
+  final String text;
   final Image img;
 
-  const CustomDialogBox(
-      {Key key, this.title, this.descriptions, this.text, this.img})
-      : super(key: key);
+  const CustomDialogBox({
+    Key key,
+    this.todo,
+    this.text,
+    this.img,
+  }) : super(key: key);
 
   @override
   _CustomDialogBoxState createState() => _CustomDialogBoxState();
@@ -39,13 +43,14 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
           padding: EdgeInsets.only(left: 20, top: 5, right: 20, bottom: 0),
           margin: EdgeInsets.only(top: 45),
           decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black, offset: Offset(0, 10), blurRadius: 10),
-              ]),
+            shape: BoxShape.rectangle,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black, offset: Offset(0, 10), blurRadius: 10),
+            ],
+          ),
           child: Expanded(
             child: Column(
               children: [
@@ -88,15 +93,8 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 Expanded(
                   child: isEdit
                       ? EditTodoInfoDetails(
-                          title: widget.title,
-                          descriptions: widget.descriptions,
-                          text: widget.text,
-                        )
-                      : TodoInfoDetails(
-                          title: widget.title,
-                          descriptions: widget.descriptions,
-                          text: widget.text,
-                        ),
+                          todo: widget.todo, text: widget.text)
+                      : TodoInfoDetails(todo: widget.todo, text: widget.text),
                 ),
               ],
             ),

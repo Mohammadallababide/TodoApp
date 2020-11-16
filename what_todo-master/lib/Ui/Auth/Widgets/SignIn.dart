@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:what_todo/Ui/Auth/bloc/auth_bloc.dart';
-import 'package:what_todo/Ui/Auth/functions/ValidatorsFunction.dart';
+import '../../../Utils/functions/ValidatorsFunction.dart';
+import 'package:what_todo/Utils/FlashErrorNotify.dart';
 
 class SigInWidget extends StatefulWidget {
   Function callback;
@@ -34,7 +35,6 @@ class _SigInWidgetState extends State<SigInWidget> {
             decoration: BoxDecoration(
               color: Colors.grey.withOpacity(0.1),
               borderRadius: BorderRadius.circular(25),
-              // border: Border.all(color: Colors.blueAccent),
             ),
             child: Padding(
               padding: EdgeInsets.only(top: sizeAware.height * 0.025),
@@ -45,6 +45,7 @@ class _SigInWidgetState extends State<SigInWidget> {
                 },
                 textAlign: TextAlign.right,
                 validator: validateEmail,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.only(left: 15, right: 15),
                   labelText: 'email',
@@ -113,7 +114,7 @@ class _SigInWidgetState extends State<SigInWidget> {
             if (state is SucessSignIn) {
               Navigator.pushReplacementNamed(context, '/homePage');
             } else if (state is ErrorSignIn) {
-              // todo getflashbar here
+              getFlashBarNotify(context, text: state.error);
             }
           },
           child: BlocBuilder(
@@ -163,8 +164,7 @@ class _SigInWidgetState extends State<SigInWidget> {
 
   void submitForm() {
     if (!_formKey.currentState.validate()) {
-      // todo define flashbar
-// todo getFlashBarNotify(context, text: 'معلومات الأدخل غير كاملة');
+      getFlashBarNotify(context, text: 'معلومات الأدخل غير كاملة');
     } else {
       _formKey.currentState.save();
       authBloc.add(

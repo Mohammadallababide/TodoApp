@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:what_todo/Ui/Auth/bloc/auth_bloc.dart';
-import 'package:what_todo/Ui/Auth/functions/ValidatorsFunction.dart';
+import '../../../Utils/functions/ValidatorsFunction.dart';
+import 'package:what_todo/Utils/FlashErrorNotify.dart';
 
 class SigUpWidget extends StatefulWidget {
   Function callback;
@@ -12,6 +13,7 @@ class SigUpWidget extends StatefulWidget {
 
 class _SigUpWidgetState extends State<SigUpWidget> {
   final AuthBloc authBloc = AuthBloc();
+  final TextEditingController _passwordTextController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String confirmPassword;
   String email;
@@ -42,6 +44,7 @@ class _SigUpWidgetState extends State<SigUpWidget> {
                   this.email = value;
                 },
                 textAlign: TextAlign.right,
+                keyboardType: TextInputType.emailAddress,
                 decoration: new InputDecoration(
                   disabledBorder: InputBorder.none,
                   contentPadding: EdgeInsets.only(left: 15, right: 15),
@@ -82,6 +85,7 @@ class _SigUpWidgetState extends State<SigUpWidget> {
                 obscureText: true,
                 textAlign: TextAlign.right,
                 validator: validatePassword,
+                controller: _passwordTextController,
                 decoration: new InputDecoration(
                   disabledBorder: InputBorder.none,
                   contentPadding: EdgeInsets.only(left: 15, right: 15),
@@ -118,7 +122,13 @@ class _SigUpWidgetState extends State<SigUpWidget> {
                 autofocus: false,
                 obscureText: true,
                 textAlign: TextAlign.right,
-                validator: validateConfirmPassword,
+                validator: (String value) {
+                  if (_passwordTextController.text != value) {
+                    return 'Passwords do not match.';
+                  } else {
+                    return null;
+                  }
+                },
                 onSaved: (value) {
                   this.confirmPassword = value;
                 },
@@ -149,7 +159,7 @@ class _SigUpWidgetState extends State<SigUpWidget> {
             if (state is SucessSignUp) {
               Navigator.pushReplacementNamed(context, '/homePage');
             } else if (state is ErrorSignUp) {
-              // todo getflashbar
+              getFlashBarNotify(context,text:state.error);
             }
           },
           child: BlocBuilder(
@@ -202,8 +212,7 @@ class _SigUpWidgetState extends State<SigUpWidget> {
 
   void submitForm() {
     if (!_formKey.currentState.validate()) {
-      // todo define flashbar
-//  getFlashBarNotify(context, text: 'معلومات الأدخل غير كاملة');
+      getFlashBarNotify(context, text: 'معلومات الأدخل غير كاملة');
     } else {
       _formKey.currentState.save();
       authBloc.add(SingUp(

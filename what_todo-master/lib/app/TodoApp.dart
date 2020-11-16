@@ -34,12 +34,10 @@ class TodoApp extends StatelessWidget {
           ),
         ),
         routes: {
-          // intro
+          // intro for check login ...
           '/': (BuildContext context) => IntroPage(),
           '/Rigester': (BuildContext context) => Rigester(),
-          // homePage
           '/homePage': (BuildContext context) => Homepage(),
-          // newTodo
           '/newTodo': (BuildContext context) => NewTodoPage(),
         });
   }

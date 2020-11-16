@@ -29,28 +29,18 @@ class _IntroPageState extends State<IntroPage> {
         cubit: authBloc,
         child: Scaffold(
           body: Container(
-              height: sizeAware.height,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                    'https://repository-images.githubusercontent.com/105165445/b8efdd00-5d13-11e9-902e-3ce3c3d7e548',
-                  ),
-                  fit: BoxFit.fill,
+            height: sizeAware.height,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(
+                  'https://repository-images.githubusercontent.com/105165445/b8efdd00-5d13-11e9-902e-3ce3c3d7e548',
                 ),
+                fit: BoxFit.fill,
               ),
-              child: Center(
-                  child: BlocBuilder(
-                      cubit: authBloc,
-                      builder: (context, state) {
-                        if (state is CheckingLogin) {
-                          return CircularProgressIndicator(
-                            backgroundColor: Colors.white,
-                          );
-                        } else {
-                          return Container();
-                        }
-                      }))),
+            ),
+            child: Container(),
+          ),
         ));
   }
 }

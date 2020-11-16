@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:what_todo/Ui/Auth/functions/ValidatorsFunction.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../Utils/functions/ValidatorsFunction.dart';
+import 'package:what_todo/Ui/TodoDetails/bloc/tododetails_bloc.dart';
+import 'package:what_todo/Utils/FlashErrorNotify.dart';
+import 'package:what_todo/model/Todo.dart';
 
 class EditTodoInfoDetails extends StatefulWidget {
-  final String title;
-  final String descriptions;
+  final Todo todo;
   final String text;
 
   const EditTodoInfoDetails({
-    @required this.title,
-    @required this.descriptions,
+    @required this.todo,
     @required this.text,
   });
   @override
@@ -16,6 +18,9 @@ class EditTodoInfoDetails extends StatefulWidget {
 }
 
 class _EditTodoInfoDetailsState extends State<EditTodoInfoDetails> {
+  String title;
+  String description;
+  final TododetailsBloc tododetailsBloc = TododetailsBloc();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,7 @@ class _EditTodoInfoDetailsState extends State<EditTodoInfoDetails> {
         Align(
           alignment: Alignment.topCenter,
           child: Text(
-            '12/12/2020',
+            widget.todo.createdTime,
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
           ),
         ),
@@ -34,7 +39,7 @@ class _EditTodoInfoDetailsState extends State<EditTodoInfoDetails> {
           height: sizeAware.height * 0.02,
         ),
         Text(
-          widget.title,
+          widget.todo.title,
           style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
         ),
         Form(
@@ -43,9 +48,11 @@ class _EditTodoInfoDetailsState extends State<EditTodoInfoDetails> {
             children: [
               TextFormField(
                 validator: validateTodo,
+                initialValue: widget.todo.title,
                 onSaved: (value) {
-                  // this.title = value;
+                  this.title = value;
                 },
+                maxLength: 15,
                 decoration: InputDecoration(
                   hintText: 'title',
                   hintStyle: TextStyle(
@@ -70,8 +77,9 @@ class _EditTodoInfoDetailsState extends State<EditTodoInfoDetails> {
                   child: TextFormField(
                     validator: validateTodo,
                     maxLines: null,
+                    initialValue: widget.todo.descraption,
                     onSaved: (value) {
-                      // this.description = value;
+                      this.description = value;
                     },
                     decoration: InputDecoration(
                       disabledBorder: InputBorder.none,
@@ -95,25 +103,39 @@ class _EditTodoInfoDetailsState extends State<EditTodoInfoDetails> {
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: sizeAware.height * 0.02),
-                child: InkWell(
-                  child: Container(
-                    height: sizeAware.height * 0.08,
-                    width: sizeAware.width * 0.6,
-                    child: Center(
-                      child: Text(
-                        'edit',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                child: BlocListener(
+                  listener: (context, state) {
+                    if (state is SucessEditTodoInfo) {
+                      setState(() {
+                        widget.todo.title = title;
+                        widget.todo.descraption = description;
+                      });
+                      Navigator.pushReplacementNamed(context, '/homePage');
+                    } else if (state is ErrorEditTodoInfo) {
+                      getFlashBarNotify(context);
+                    }
+                  },
+                  cubit: tododetailsBloc,
+                  child: InkWell(
+                    child: Container(
+                      height: sizeAware.height * 0.08,
+                      width: sizeAware.width * 0.6,
+                      child: Center(
+                        child: Text(
+                          'edit',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: Theme.of(context).primaryColor),
                     ),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: Theme.of(context).primaryColor),
+                    onTap: () => submitForm(),
                   ),
-                  onTap: () {},
                 ),
               ),
             ],
@@ -121,5 +143,22 @@ class _EditTodoInfoDetailsState extends State<EditTodoInfoDetails> {
         ),
       ],
     );
+  }
+
+  void submitForm() {
+    if (!_formKey.currentState.validate()) {
+      getFlashBarNotify(context, text: 'معلومات الأدخل غير كاملة');
+    } else {
+      _formKey.currentState.save();
+      Todo updateTodo = Todo(
+        title: title,
+        descraption: description,
+        createdTime: widget.todo.createdTime,
+        id: widget.todo.id,
+      );
+      tododetailsBloc.add(
+        EditTodoInfo(updateTodo),
+      );
+    }
   }
 }

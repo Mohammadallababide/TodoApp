@@ -29,7 +29,7 @@ String validateConfirmPassword(String value) {
 }
 
 String validateTodo(String value) {
-  if (value == null) {
+  if (value.length == 0 ) {
     return 'this field shoud not be empty';
   } else {
     return null;

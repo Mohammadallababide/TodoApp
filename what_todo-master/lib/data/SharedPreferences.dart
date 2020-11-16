@@ -5,6 +5,7 @@ class SharedPref {
   SharedPreferences _preferences;
   static final SharedPref pref = SharedPref._();
   static String token;
+  static String userId;
   Future<SharedPreferences> get _getSharedPref async {
     if (_preferences != null)
       return _preferences;
@@ -35,12 +36,26 @@ class SharedPref {
     return p.getString("token");
   }
 
+  Future<void> saveUserId(String userId) async {
+    final SharedPreferences p = await _getSharedPref;
+
+    p.setString("userId", userId);
+    SharedPref.userId = await getToken();
+  }
+
+  Future<String> getUserId() async {
+    final SharedPreferences p = await _getSharedPref;
+
+    return p.getString("userId");
+  }
+
   Future<String> checkLogin() async {
     try {
       final SharedPreferences p = await _getSharedPref;
       final String token = p.getString("token");
       print("token " + token);
       if (token != null) {
+        await getUserId();
         return await getToken();
       }
       return null;

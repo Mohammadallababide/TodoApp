@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:what_todo/Ui/homePage/Widgets/TodoCard.dart';
+import 'package:what_todo/Ui/homePage/bloc/homepage_bloc.dart';
+import 'package:what_todo/Utils/ShimmerWid.dart';
 
-// import 'package:what_todo/database_helper.dart';
 class Homepage extends StatefulWidget {
   @override
   _HomepageState createState() => _HomepageState();
 }
 
 class _HomepageState extends State<Homepage> {
-  // DatabaseHelper _dbHelper = DatabaseHelper();
+  final HomepageBloc homepageBloc = HomepageBloc();
+  @override
+  void initState() {
+    homepageBloc.add(GetTodoList());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,25 +52,28 @@ class _HomepageState extends State<Homepage> {
                       ),
                     ],
                   ),
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        TodoCard(),
-                        TodoCard(),
-                        TodoCard(),
-                        TodoCard(),
-                        TodoCard(),
-                        TodoCard(),
-                        TodoCard(),
-                        TodoCard(),
-                        TodoCard(),
-                        TodoCard(),
-                        TodoCard(),
-                        TodoCard(),
-                        TodoCard(),
-                      ],
-                    ),
-                  ),
+                  BlocBuilder(
+                      buildWhen: (prev, cur) => cur is TodoListReady,
+                      cubit: homepageBloc,
+                      builder: (context, state) {
+                        if (state is TodoListReady) {
+                          return Expanded(
+                            child: ListView.builder(
+                              itemBuilder: (BuildContext context, int index) {
+                                return TodoCard(
+                                  todo: state.todoList[index],
+                                );
+                              },
+                              itemCount: state.todoList.length,
+                            ),
+                          );
+                        }
+                        return Expanded(
+                          child: ListView(
+                            children: loadingTodo(sizeAware),
+                          ),
+                        );
+                      })
                 ],
               ),
               Positioned(
@@ -93,5 +103,27 @@ class _HomepageState extends State<Homepage> {
         ),
       ),
     );
+  }
+
+  List<Widget> loadingTodo(Size sizeAware) {
+    List<Widget> res = [];
+    for (int i = 0; i < 4; i++) {
+      res.add(
+        Padding(
+          padding: EdgeInsets.only(bottom: sizeAware.height * 0.03),
+          child: getShimmer(
+            Material(
+              elevation: 0.7,
+              borderRadius: BorderRadius.circular(25),
+              child: Container(
+                height: sizeAware.height * 0.2,
+                width: sizeAware.width * 0.9,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return res;
   }
 }

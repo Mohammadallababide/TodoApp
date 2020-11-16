@@ -54,7 +54,6 @@ class _RigesterState extends State<Rigester> {
                       height: sizeAware.height * 0.72,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        // color: Colors.black,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(45.0),
                           topRight: Radius.circular(45.0),
